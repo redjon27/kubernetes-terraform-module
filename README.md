@@ -10,38 +10,39 @@ Terraform state per environment.
 
 ## Repository Structure
 
+```text
 ├── bootstrap/
-│ ├── main.tf
-│ ├── variables.tf
-│ ├── outputs.tf
-│ └── terraform.tfvars
+│   ├── main.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── terraform.tfvars
 │
 ├── modules/
-│ └── eks-platform/
-│ ├── vpc.tf
-│ ├── eks.tf
-│ ├── addons.tf
-│ ├── locals.tf
-│ ├── variables.tf
-│ └── outputs.tf
+│   └── eks-platform/
+│       ├── vpc.tf
+│       ├── eks.tf
+│       ├── addons.tf
+│       ├── locals.tf
+│       ├── variables.tf
+│       └── outputs.tf
 │
 └── envs/
-├── dev/
-│ ├── main.tf
-│ ├── variables.tf
-│ ├── backend.hcl
-│ └── terraform.tfvars
-├── test/
-│ ├── main.tf
-│ ├── variables.tf
-│ ├── backend.hcl
-│ └── terraform.tfvars
-└── prod/
-├── main.tf
-├── variables.tf
-├── backend.hcl
-└── terraform.tfvars
-
+    ├── dev/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   ├── backend.hcl
+    │   └── terraform.tfvars
+    ├── test/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   ├── backend.hcl
+    │   └── terraform.tfvars
+    └── prod/
+        ├── main.tf
+        ├── variables.tf
+        ├── backend.hcl
+        └── terraform.tfvars
+```
 yaml
 Copy code
 
