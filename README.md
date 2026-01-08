@@ -42,23 +42,23 @@ Terraform state per environment.
         ├── variables.tf
         ├── backend.hcl
         └── terraform.tfvars
-
+```
 yaml
 Copy code
 
 Each environment has its own Terraform state stored in S3 and locked via DynamoDB.
 
 ---
-
+```text
 ## Prerequisites
 
 - Terraform >= 1.6
 - AWS CLI v2
 - AWS credentials (Access Keys or SSO)
 - IAM permissions to manage EKS, VPC, IAM, EC2, S3, DynamoDB
-
+```
 ---
-
+```text
 ## Bootstrap Terraform State (S3 + DynamoDB)
 
 The `bootstrap/` directory creates:
@@ -103,9 +103,9 @@ terraform apply
 
 yaml
 Copy code
-
+```
 ---
-
+```text
 ## Access the EKS Cluster
 
 Example for dev:
@@ -119,9 +119,9 @@ kubectl get pods -A
 
 yaml
 Copy code
-
+```
 ---
-
+```text
 ## EKS Access Permissions (kubectl & AWS Console)
 
 EKS requires explicit IAM access entries.
@@ -147,9 +147,9 @@ aws eks associate-access-policy
 
 yaml
 Copy code
-
+```
 ---
-
+```text
 ## Environment Configuration
 
 Each environment controls:
@@ -184,9 +184,9 @@ disk_size = 20
 
 yaml
 Copy code
-
+```
 ---
-
+```text
 ## Architecture & Design Choices
 
 - **Multi-environment isolation** using separate Terraform state per env
@@ -199,9 +199,9 @@ Copy code
   - coredns
   - kube-proxy
 - **EKS Access Entries** instead of legacy `aws-auth` ConfigMap
-
+```
 ---
-
+```text
 ## Troubleshooting
 
 ### Nodes fail to join the cluster
@@ -215,9 +215,9 @@ Copy code
 ### kubectl authentication errors
 - Re-run `aws eks update-kubeconfig`
 - Ensure your IAM principal has an EKS access entry
-
+```
 ---
-
+```text
 ## Destroy an Environment
 
 cd envs/dev
@@ -225,9 +225,9 @@ terraform destroy -var-file=terraform.tfvars
 
 yaml
 Copy code
-
+```
 ---
-
+```text
 ## Notes
 
 - Commit `.terraform.lock.hcl`
