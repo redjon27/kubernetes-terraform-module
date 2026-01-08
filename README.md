@@ -42,7 +42,7 @@ Terraform state per environment.
         ├── variables.tf
         ├── backend.hcl
         └── terraform.tfvars
-```
+
 yaml
 Copy code
 
@@ -233,3 +233,4 @@ Copy code
 - Commit `.terraform.lock.hcl`
 - Do not commit Terraform state files
 - Use least-privilege IAM policies in production
+```
