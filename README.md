@@ -10,7 +10,6 @@ Terraform state per environment.
 
 ## Repository Structure
 
-.
 ├── bootstrap/
 │ ├── main.tf
 │ ├── variables.tf
