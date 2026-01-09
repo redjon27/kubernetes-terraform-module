@@ -20,3 +20,17 @@ module "platform" {
     Environment = "prod"
   }
 }
+
+module "cluster_autoscaler_iam" {
+  count  = var.enable_cluster_autoscaler ? 1 : 0
+  source = "../../modules/cluster-autoscaler-iam"
+
+  cluster_name      = module.platform.cluster_name
+  oidc_provider_arn = module.platform.oidc_provider_arn
+  oidc_provider_url = module.platform.oidc_provider_url
+}
+
+output "cluster_autoscaler_role_arn" {
+  description = "IRSA role ARN for Cluster Autoscaler (empty when disabled)"
+  value       = var.enable_cluster_autoscaler ? module.cluster_autoscaler_iam[0].role_arn : ""
+}
