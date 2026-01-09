@@ -276,7 +276,7 @@ Troubleshooting:
 ```text
 ## Destroy an Environment
 
-cd envs/dev
+cd envs/dev|test|prod
 terraform destroy -var-file=terraform.tfvars
 ```
 ----------------------------------------------------------------
