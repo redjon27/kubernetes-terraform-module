@@ -6,7 +6,7 @@ This repository provisions a production-style AWS EKS platform using Terraform.
 It follows an enterprise-friendly structure with reusable modules and isolated
 Terraform state per environment.
 
----
+----------------------------------------------------------------
 
 ## Repository Structure
 
@@ -42,13 +42,10 @@ Terraform state per environment.
         ├── variables.tf
         ├── backend.hcl
         └── terraform.tfvars
-```
-yaml
-Copy code
 
 Each environment has its own Terraform state stored in S3 and locked via DynamoDB.
-
----
+```
+----------------------------------------------------------------
 ```text
 ## Prerequisites
 
@@ -57,24 +54,21 @@ Each environment has its own Terraform state stored in S3 and locked via DynamoD
 - AWS credentials (Access Keys or SSO)
 - IAM permissions to manage EKS, VPC, IAM, EC2, S3, DynamoDB
 ```
----
+----------------------------------------------------------------
 ```text
 ## Bootstrap Terraform State (S3 + DynamoDB)
 
-The `bootstrap/` directory creates:
+The `bootstrap/backend` directory creates:
 - An S3 bucket for Terraform state
 - A DynamoDB table for state locking
 
-cd bootstrap
+cd bootstrap/backend
 terraform init
 terraform plan
 terraform apply
-
-yaml
-Copy code
-
----
-
+```
+----------------------------------------------------------------
+```text
 ## Deploy an Environment
 
 ### Dev
@@ -83,17 +77,11 @@ terraform init -backend-config=backend.hcl
 terraform plan -var-file=terraform.tfvars
 terraform apply
 
-shell
-Copy code
-
 ### Test
 cd envs/test
 terraform init -backend-config=backend.hcl
 terraform plan -var-file=terraform.tfvars
 terraform apply
-
-shell
-Copy code
 
 ### Prod
 cd envs/prod
@@ -101,10 +89,8 @@ terraform init -backend-config=backend.hcl
 terraform plan -var-file=terraform.tfvars
 terraform apply
 
-yaml
-Copy code
 ```
----
+----------------------------------------------------------------
 ```text
 ## Access the EKS Cluster
 
@@ -117,10 +103,8 @@ aws eks update-kubeconfig
 kubectl get nodes
 kubectl get pods -A
 
-yaml
-Copy code
 ```
----
+----------------------------------------------------------------
 ```text
 ## EKS Access Permissions (kubectl & AWS Console)
 
@@ -145,10 +129,8 @@ aws eks associate-access-policy
 --access-scope type=cluster
 --region eu-central-1
 
-yaml
-Copy code
 ```
----
+----------------------------------------------------------------
 ```text
 ## Environment Configuration
 
@@ -181,11 +163,9 @@ instance_types = ["t3.large"]
 capacity_type = "ON_DEMAND"
 disk_size = 20
 }
-
-yaml
-Copy code
 ```
----
+----------------------------------------------------------------
+
 ```text
 ## Architecture & Design Choices
 
@@ -200,7 +180,7 @@ Copy code
   - kube-proxy
 - **EKS Access Entries** instead of legacy `aws-auth` ConfigMap
 ```
----
+----------------------------------------------------------------
 ```text
 ## Troubleshooting
 
@@ -216,17 +196,14 @@ Copy code
 - Re-run `aws eks update-kubeconfig`
 - Ensure your IAM principal has an EKS access entry
 ```
----
+----------------------------------------------------------------
 ```text
 ## Destroy an Environment
 
 cd envs/dev
 terraform destroy -var-file=terraform.tfvars
-
-yaml
-Copy code
 ```
----
+----------------------------------------------------------------
 ```text
 ## Notes
 
