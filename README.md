@@ -26,22 +26,29 @@ Terraform state per environment.
 │       ├── variables.tf
 │       └── outputs.tf
 │
-└── envs/
-    ├── dev/
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   ├── backend.hcl
-    │   └── terraform.tfvars
-    ├── test/
-    │   ├── main.tf
-    │   ├── variables.tf
-    │   ├── backend.hcl
-    │   └── terraform.tfvars
-    └── prod/
-        ├── main.tf
-        ├── variables.tf
-        ├── backend.hcl
-        └── terraform.tfvars
+├── envs/
+│   ├── dev/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── backend.hcl
+│   │   └── terraform.tfvars
+│   ├── test/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── backend.hcl
+│   │   └── terraform.tfvars
+│   └── prod/
+│       ├── main.tf
+│       ├── variables.tf
+│       ├── backend.hcl
+│       └── terraform.tfvars
+│
+└── tests/
+    └── autoscaler/
+        └── scripts/
+            ├── cluster-autoscaler.sh
+            ├── cluster-autoscaler-uninstall.sh
+            └── stress.yaml
 
 Each environment has its own Terraform state stored in S3 and locked via DynamoDB.
 ```
@@ -182,7 +189,7 @@ disk_size = 20
 ```
 ----------------------------------------------------------------
 ```text
-## Troubleshooting
+### Troubleshooting
 
 ### Nodes fail to join the cluster
 - Ensure NAT Gateway is enabled when nodes are in private subnets
@@ -198,6 +205,75 @@ disk_size = 20
 ```
 ----------------------------------------------------------------
 ```text
+## Cluster Autoscaler (Flag-Based, Optional)
+
+Cluster Autoscaler is optional and intentionally not part of the core EKS module.
+
+Design principles:
+- Core infrastructure remains clean and destroy-safe
+- Autoscaler can be enabled or disabled per environment
+- IAM (IRSA) is managed by Terraform
+- Kubernetes resources are managed via scripts and Helm
+
+IAM (IRSA) is managed by Terraform
+- Kubernetes resources are managed via scripts + Helm
+- Enable Autoscaler (Dev Example)
+
+Enable flag in Terraform:
+- enable_cluster_autoscaler = true
+- cd envs/dev
+- terraform apply -var-file=terraform.tfvars
+
+
+Install autoscaler:
+- ./tests/autoscaler/scripts/cluster-autoscaler.sh devdev/test/prod
+
+Verify:
+- kubectl -n kube-system get pods | grep autoscaler
+
+Disable Autoscaler
+- Uninstall from cluster:
+- ./tests/autoscaler/scripts/cluster-autoscaler-uninstall.sh dev/test/prod
+
+Disable IAM in Terraform:
+- enable_cluster_autoscaler = false
+- cd envs/dev
+- terraform apply -var-file=terraform.tfvars
+
+Note: 
+Autoscaler scale-up may leave the node group with a higher desired capacity.
+In that case, reset ASG desired capacity back to baseline (e.g. 1).
+
+Cluster Autoscaler Stress Test (Validation)
+- A simple stress workload is provided to validate autoscaler behavior.
+- kubectl apply -f tests/autoscaler/scripts/stress.yaml
+- kubectl get pods
+- kubectl get nodes
+
+Expected behavior:
+- Pods become Pending
+- Autoscaler increases node group size
+- New node joins the cluster
+
+Cleanup:
+- kubectl delete -f tests/autoscaler/scripts/stress.yaml
+
+Troubleshooting:
+- Nodes fail to join the cluster
+- Ensure NAT Gateway is enabled for private subnets
+- Verify cluster endpoint access
+- CoreDNS stuck in DEGRADED
+- Usually caused by nodes not being Ready
+- Fix node networking first
+- kubectl authentication errors
+- Re-run aws eks update-kubeconfig
+- Ensure your IAM principal has an EKS access entry
+- Node does not scale down after autoscaler removal
+- Autoscaler modifies ASG desired capacity
+- Manually reset ASG desired capacity or re-apply Terraform baseline
+```
+----------------------------------------------------------------
+```text
 ## Destroy an Environment
 
 cd envs/dev
@@ -210,4 +286,6 @@ terraform destroy -var-file=terraform.tfvars
 - Commit `.terraform.lock.hcl`
 - Do not commit Terraform state files
 - Use least-privilege IAM policies in production
+- Keep core infrastructure and operational add-ons clearly separated
+- Prefer least-privilege IAM policies in production
 ```

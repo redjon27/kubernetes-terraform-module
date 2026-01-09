@@ -22,3 +22,9 @@ variable "node_group" {
     disk_size      = number
   })
 }
+
+variable "enable_cluster_autoscaler" {
+  type        = bool
+  description = "Enable/disable Cluster Autoscaler IRSA (IAM) resources"
+  default     = false
+}

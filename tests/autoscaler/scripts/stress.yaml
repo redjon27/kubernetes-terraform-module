@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpu-stress
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cpu-stress
+  template:
+    metadata:
+      labels:
+        app: cpu-stress
+    spec:
+      containers:
+      - name: stress
+        image: busybox
+        command: ["sh", "-c", "sleep 3600"]
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "1Gi"
