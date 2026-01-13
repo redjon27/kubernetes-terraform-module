@@ -274,6 +274,87 @@ Troubleshooting:
 ```
 ----------------------------------------------------------------
 ```text
+### Production: Private-Only Cluster Access (NAT Disabled)
+
+The production environment is designed as a **private-only EKS cluster**.
+
+Production settings:
+- `cluster_endpoint_public_access = false`
+- `cluster_endpoint_private_access = true`
+- `enable_nat_gateway = false`
+
+This design ensures:
+- No public exposure of the Kubernetes API
+- No direct internet egress from worker nodes
+- All traffic remains within the AWS private network
+
+### How nodes join the cluster without NAT
+When `enable_nat_gateway = false`, worker nodes run in private subnets and have **no direct internet access**.
+
+To allow nodes to:
+- Pull container images
+- Authenticate with AWS APIs
+- Join the Kubernetes cluster successfully
+
+The platform **automatically provisions VPC Endpoints (PrivateLink)** for:
+- Amazon ECR (api, dkr)
+- Amazon STS
+- Amazon EC2
+- Amazon S3 (Gateway Endpoint)
+- Amazon CloudWatch Logs
+- AWS Systems Manager (SSM)
+
+These endpoints are created **only when NAT is disabled**, ensuring:
+- Dev/Test environments remain simple
+- Production remains secure and private
+
+### Important: kubectl access in production
+Because the EKS API endpoint is private-only:
+
+Running `kubectl` from a local machine **will not work** unless you are connected to the VPC.
+
+Expected error when accessing from outside:
+dial tcp <private-ip>:443: i/o timeout
+
+
+### Supported access methods for production
+To manage the production cluster, use one of the following:
+
+1. **AWS Client VPN**
+   - Connect to the VPC
+   - Run `kubectl` normally after VPN connection
+
+2. **SSM Session Manager (recommended)**
+   - Use an EC2 admin instance inside the VPC
+   - No public IP, no inbound ports
+   - Fully audited and secure
+
+3. **Bastion Host**
+   - SSH into a host inside the VPC
+   - Run `kubectl` from there
+
+### Temporary public access (not recommended for long-term)
+For short administrative tasks, the EKS API can be temporarily exposed:
+
+- Enable public access
+- Restrict access to a specific IP using CIDR (`/32`)
+- Revert back to private-only after completion
+
+This approach should be used **only when absolutely necessary**.
+
+### Troubleshooting: Nodes fail to join / CoreDNS DEGRADED
+If you encounter:
+- `NodeCreationFailure`
+- `CoreDNS` stuck in `DEGRADED`
+
+Check the following:
+- NAT is enabled **or**
+- Required VPC Endpoints exist when NAT is disabled
+
+In private-only production clusters, missing VPC endpoints will prevent nodes from joining the cluster.
+```
+----------------------------------------------------------------
+```text
 ## Destroy an Environment
 
 cd envs/dev|test|prod
