@@ -26,15 +26,17 @@ Terraform state per environment.
 ### Repository Structure
 ```text
 ├── bootstrap/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── terraform.tfvars
+│   └── backend/
+│       ├── main.tf
+│       ├── variables.tf
+│       ├── outputs.tf
+│       └── terraform.tfvars
 │
 ├── modules/
 │   └── eks-platform/
 │       ├── vpc.tf
 │       ├── eks.tf
+│       ├── vpc_endpoints.tf
 │       ├── addons.tf
 │       ├── locals.tf
 │       ├── variables.tf
@@ -44,16 +46,24 @@ Terraform state per environment.
 │   ├── dev/
 │   │   ├── main.tf
 │   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   ├── version.tf
 │   │   ├── backend.hcl
 │   │   └── terraform.tfvars
+│   │   
 │   ├── test/
 │   │   ├── main.tf
 │   │   ├── variables.tf
 │   │   ├── backend.hcl
+│   │   ├── outputs.tf
+│   │   ├── version.tf
 │   │   └── terraform.tfvars
+│   │   
 │   └── prod/
 │       ├── main.tf
 │       ├── variables.tf
+│       ├── outputs.tf
+│       ├── version.tf
 │       ├── backend.hcl
 │       └── terraform.tfvars
 │
