@@ -28,6 +28,8 @@ Terraform state per environment.
 ├── bootstrap/
 │   └── backend/
 │       ├── main.tf
+│       ├── providers.tf
+│       ├── versions.tf
 │       ├── variables.tf
 │       ├── outputs.tf
 │       └── terraform.tfvars
@@ -40,6 +42,7 @@ Terraform state per environment.
 │       ├── addons.tf
 │       ├── locals.tf
 │       ├── variables.tf
+│       ├── versions.tf
 │       └── outputs.tf
 │
 ├── envs/
