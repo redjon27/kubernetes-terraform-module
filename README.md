@@ -6,10 +6,24 @@ This repository provisions a production-style AWS EKS platform using Terraform.
 It follows an enterprise-friendly structure with reusable modules and isolated
 Terraform state per environment.
 
+### Table of Contents
+
+- [Repository Structure](#repository-structure)
+- [Prerequisites](#prerequisites)
+- [Bootstrap Terraform State](#bootstrap-terraform-state-s3--dynamodb)
+- [Deploy an Environment](#deploy-an-environment)
+- [Access the EKS Cluster](#access-the-eks-cluster)
+- [EKS Access Permissions](#eks-access-permissions-kubectl--aws-console)
+- [Environment Configuration](#environment-configuration)
+- [Architecture & Design Choices](#architecture--design-choices)
+- [Production: Private-Only Cluster Access](#production-private-only-cluster-access-nat-disabled)
+- [Cluster Autoscaler](#cluster-autoscaler-flag-based-optional)
+- [Troubleshooting](#troubleshooting)
+- [Destroy an Environment](#destroy-an-environment)
+- [Notes](#notes)
+
 ----------------------------------------------------------------
-
-## Repository Structure
-
+### Repository Structure
 ```text
 ├── bootstrap/
 │   ├── main.tf
@@ -53,18 +67,16 @@ Terraform state per environment.
 Each environment has its own Terraform state stored in S3 and locked via DynamoDB.
 ```
 ----------------------------------------------------------------
+### Prerequisites
 ```text
-## Prerequisites
-
 - Terraform >= 1.6
 - AWS CLI v2
 - AWS credentials (Access Keys or SSO)
 - IAM permissions to manage EKS, VPC, IAM, EC2, S3, DynamoDB
 ```
 ----------------------------------------------------------------
+### Bootstrap Terraform State (S3 + DynamoDB)
 ```text
-## Bootstrap Terraform State (S3 + DynamoDB)
-
 The `bootstrap/backend` directory creates:
 - An S3 bucket for Terraform state
 - A DynamoDB table for state locking
@@ -75,9 +87,8 @@ terraform plan
 terraform apply
 ```
 ----------------------------------------------------------------
+### Deploy an Environment
 ```text
-## Deploy an Environment
-
 ### Dev
 cd envs/dev
 terraform init -backend-config=backend.hcl
@@ -98,9 +109,8 @@ terraform apply
 
 ```
 ----------------------------------------------------------------
+### Access the EKS Cluster
 ```text
-## Access the EKS Cluster
-
 Example for dev:
 
 aws eks update-kubeconfig
@@ -112,9 +122,8 @@ kubectl get pods -A
 
 ```
 ----------------------------------------------------------------
+### EKS Access Permissions (kubectl & AWS Console)
 ```text
-## EKS Access Permissions (kubectl & AWS Console)
-
 EKS requires explicit IAM access entries.
 
 If you see:
@@ -138,9 +147,8 @@ aws eks associate-access-policy
 
 ```
 ----------------------------------------------------------------
+### Environment Configuration
 ```text
-## Environment Configuration
-
 Each environment controls:
 - Kubernetes version
 - VPC CIDR
@@ -172,10 +180,8 @@ disk_size = 20
 }
 ```
 ----------------------------------------------------------------
-
+### Architecture & Design Choices
 ```text
-## Architecture & Design Choices
-
 - **Multi-environment isolation** using separate Terraform state per env
 - **Reusable Terraform module** (`modules/eks-platform`)
 - **EKS Managed Node Groups** for simplicity and stability
@@ -188,9 +194,8 @@ disk_size = 20
 - **EKS Access Entries** instead of legacy `aws-auth` ConfigMap
 ```
 ----------------------------------------------------------------
-```text
 ### Troubleshooting
-
+```text
 ### Nodes fail to join the cluster
 - Ensure NAT Gateway is enabled when nodes are in private subnets
 - Verify endpoint access settings
@@ -204,9 +209,8 @@ disk_size = 20
 - Ensure your IAM principal has an EKS access entry
 ```
 ----------------------------------------------------------------
+### Cluster Autoscaler (Flag-Based, Optional)
 ```text
-## Cluster Autoscaler (Flag-Based, Optional)
-
 Cluster Autoscaler is optional and intentionally not part of the core EKS module.
 
 Design principles:
@@ -273,9 +277,8 @@ Troubleshooting:
 - Manually reset ASG desired capacity or re-apply Terraform baseline
 ```
 ----------------------------------------------------------------
-```text
 ### Production: Private-Only Cluster Access (NAT Disabled)
-
+```text
 The production environment is designed as a **private-only EKS cluster**.
 
 Production settings:
@@ -354,16 +357,14 @@ Check the following:
 In private-only production clusters, missing VPC endpoints will prevent nodes from joining the cluster.
 ```
 ----------------------------------------------------------------
+### Destroy an Environment
 ```text
-## Destroy an Environment
-
 cd envs/dev|test|prod
 terraform destroy -var-file=terraform.tfvars
 ```
 ----------------------------------------------------------------
+### Notes
 ```text
-## Notes
-
 - Commit `.terraform.lock.hcl`
 - Do not commit Terraform state files
 - Use least-privilege IAM policies in production
