@@ -48,3 +48,9 @@ variable "cluster_endpoint_private_access" {
   type    = bool
   default = true
 }
+
+variable "enable_vpc_endpoints" {
+  description = "Create VPC endpoints (PrivateLink) for private subnets when NAT is disabled."
+  type        = bool
+  default     = false
+}

@@ -49,3 +49,8 @@ variable "enable_cluster_autoscaler" {
   description = "Enable/disable Cluster Autoscaler IRSA (IAM) resources"
   default     = false
 }
+
+variable "enable_vpc_endpoints" {
+  type    = bool
+  default = false
+}

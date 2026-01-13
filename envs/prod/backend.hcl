@@ -3,5 +3,3 @@ key            = "eks/prod/terraform.tfstate"
 region         = "eu-central-1"
 dynamodb_table = "terraform-state-lock"
 encrypt        = true
-cluster_endpoint_public_access  = false
-cluster_endpoint_private_access = true

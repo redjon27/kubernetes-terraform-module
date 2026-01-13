@@ -12,6 +12,7 @@ module "platform" {
   enable_nat_gateway = var.enable_nat_gateway
   instance_types     = var.instance_types
   node_group         = var.node_group
+  enable_vpc_endpoints = var.enable_vpc_endpoints
 
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
