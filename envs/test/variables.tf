@@ -49,3 +49,12 @@ variable "enable_cluster_autoscaler" {
   description = "Enable/disable Cluster Autoscaler IRSA (IAM) resources"
   default     = false
 }
+
+variable "irsa_roles" {
+  type = map(object({
+    namespace      = string
+    serviceaccount = string
+    policy         = any
+  }))
+  default = {}
+}

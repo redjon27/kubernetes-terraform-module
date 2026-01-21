@@ -54,3 +54,13 @@ variable "enable_vpc_endpoints" {
   type        = bool
   default     = false
 }
+
+variable "irsa_roles" {
+  type = map(object({
+    namespace      = string
+    serviceaccount = string
+    policy         = optional(any, null)
+    policy_arns    = optional(list(string), [])
+  }))
+  default = {}
+}

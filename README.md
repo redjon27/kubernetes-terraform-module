@@ -126,8 +126,8 @@ terraform apply
 ```text
 Example for dev:
 
-aws eks update-kubeconfig
---region eu-central-1
+aws eks update-kubeconfig \
+--region eu-central-1 \
 --name redi-eks-dev
 
 kubectl get nodes
@@ -146,16 +146,16 @@ Create an access entry for your IAM principal:
 
 PRINCIPAL_ARN=$(aws sts get-caller-identity --query Arn --output text)
 
-aws eks create-access-entry
---cluster-name redi-eks-dev
---principal-arn "$PRINCIPAL_ARN"
---region eu-central-1
+aws eks create-access-entry \
+--cluster-name redi-eks-dev \
+--principal-arn "$PRINCIPAL_ARN" \
+--region eu-central-1 
 
-aws eks associate-access-policy
---cluster-name redi-eks-dev
---principal-arn "$PRINCIPAL_ARN"
---policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy
---access-scope type=cluster
+aws eks associate-access-policy \
+--cluster-name redi-eks-dev \
+--principal-arn "$PRINCIPAL_ARN" \
+--policy-arn arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy \
+--access-scope type=cluster \
 --region eu-central-1
 
 ```
@@ -243,14 +243,14 @@ Enable flag in Terraform:
 
 
 Install autoscaler:
-- ./tests/autoscaler/scripts/cluster-autoscaler.sh devdev/test/prod
+- ./tests/autoscaler/scripts/cluster-autoscaler.sh dev|test|prod
 
 Verify:
 - kubectl -n kube-system get pods | grep autoscaler
 
 Disable Autoscaler
 - Uninstall from cluster:
-- ./tests/autoscaler/scripts/cluster-autoscaler-uninstall.sh dev/test/prod
+- ./tests/autoscaler/scripts/cluster-autoscaler-uninstall.sh dev|test|prod
 
 Disable IAM in Terraform:
 - enable_cluster_autoscaler = false
@@ -373,6 +373,7 @@ In private-only production clusters, missing VPC endpoints will prevent nodes fr
 ### Destroy an Environment
 ```text
 cd envs/dev|test|prod
+terraform plan -destroy -var-file=terraform.tfvars
 terraform destroy -var-file=terraform.tfvars
 ```
 ----------------------------------------------------------------

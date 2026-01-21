@@ -17,3 +17,8 @@ output "oidc_provider_arn" {
 output "oidc_provider_url" {
   value = module.eks.oidc_provider
 }
+
+output "irsa_role_arns" {
+  description = "Map of IRSA role ARNs"
+  value       = { for k, r in aws_iam_role.irsa : k => r.arn }
+}

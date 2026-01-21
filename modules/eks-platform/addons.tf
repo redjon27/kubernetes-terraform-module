@@ -1,14 +1,37 @@
-resource "aws_eks_addon" "vpc_cni" {
+ resource "aws_eks_addon" "vpc_cni" {
   cluster_name = module.eks.cluster_name
   addon_name   = "vpc-cni"
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "coredns" {
   cluster_name = module.eks.cluster_name
   addon_name   = "coredns"
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
 }
 
 resource "aws_eks_addon" "kube_proxy" {
   cluster_name = module.eks.cluster_name
   addon_name   = "kube-proxy"
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+}
+
+resource "aws_eks_addon" "ebs_csi" {
+  cluster_name = module.eks.cluster_name
+  addon_name   = "aws-ebs-csi-driver"
+
+  # IRSA role created by your generic irsa.tf:
+  service_account_role_arn = try(aws_iam_role.irsa["ebs_csi"].arn, null)
+
+  resolve_conflicts_on_create = "OVERWRITE"
+  resolve_conflicts_on_update = "OVERWRITE"
+
+  depends_on = [
+    aws_iam_role.irsa,
+    aws_iam_role_policy_attachment.irsa_managed,
+    aws_iam_role_policy_attachment.irsa_inline
+  ]
 }

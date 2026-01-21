@@ -15,6 +15,7 @@ module "platform" {
 
   cluster_endpoint_public_access  = var.cluster_endpoint_public_access
   cluster_endpoint_private_access = var.cluster_endpoint_private_access
+  irsa_roles                      = var.irsa_roles
 
   tags = {
     Environment = "test"

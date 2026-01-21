@@ -42,6 +42,33 @@ module "vpc_endpoints" {
       tags = local.tags
     }
 
+    ssm = {
+      service             = "ssm"
+      service_type        = "Interface"
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.private_subnets
+      security_group_ids  = [aws_security_group.vpc_endpoints[0].id]
+      tags                = local.tags
+    }
+
+    ec2messages = {
+      service             = "ec2messages"
+      service_type        = "Interface"
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.private_subnets
+      security_group_ids  = [aws_security_group.vpc_endpoints[0].id]
+      tags                = local.tags
+    }
+
+    ssmmessages = {
+      service             = "ssmmessages"
+      service_type        = "Interface"
+      private_dns_enabled = true
+      subnet_ids          = module.vpc.private_subnets
+      security_group_ids  = [aws_security_group.vpc_endpoints[0].id]
+      tags                = local.tags
+    }
+
     ecr_api = {
       service             = "ecr.api"
       service_type        = "Interface"
