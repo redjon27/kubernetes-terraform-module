@@ -31,7 +31,7 @@ resource "aws_iam_policy" "this" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # ASG + EC2 (siç e kishe)
+
       {
         Effect = "Allow"
         Action = [
@@ -46,7 +46,7 @@ resource "aws_iam_policy" "this" {
         Resource = "*"
       },
 
-      # EKS Managed Nodegroup discovery (fix për error-in tënd)
+     
       {
         Effect = "Allow"
         Action = [

@@ -27,7 +27,6 @@ resource "aws_iam_role" "irsa" {
   tags = local.tags
 }
 
-# Create inline policy ONLY when 'policy' is provided
 resource "aws_iam_policy" "irsa" {
   for_each = {
     for k, v in var.irsa_roles : k => v
@@ -39,7 +38,6 @@ resource "aws_iam_policy" "irsa" {
   tags   = local.tags
 }
 
-# Attach inline policy ONLY for those roles
 resource "aws_iam_role_policy_attachment" "irsa_inline" {
   for_each = aws_iam_policy.irsa
 
@@ -47,7 +45,6 @@ resource "aws_iam_role_policy_attachment" "irsa_inline" {
   policy_arn = aws_iam_policy.irsa[each.key].arn
 }
 
-# Attach AWS managed policies (0..n) per role
 locals {
   irsa_managed_attachments = merge([
     for role_key, role_cfg in var.irsa_roles : {

@@ -31,7 +31,7 @@ module "vpc_endpoints" {
   vpc_id = module.vpc.vpc_id
 
   endpoints = {
-    # minimum set for EKS nodes without NAT
+    
     s3 = {
       service      = "s3"
       service_type = "Gateway"

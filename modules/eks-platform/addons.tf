@@ -23,7 +23,6 @@ resource "aws_eks_addon" "ebs_csi" {
   cluster_name = module.eks.cluster_name
   addon_name   = "aws-ebs-csi-driver"
 
-  # IRSA role created by your generic irsa.tf:
   service_account_role_arn = try(aws_iam_role.irsa["ebs_csi"].arn, null)
 
   resolve_conflicts_on_create = "OVERWRITE"
