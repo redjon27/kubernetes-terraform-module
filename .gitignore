@@ -15,10 +15,10 @@ crash.log
 crash.*.log
 
 # Override files (local-only)
-override.tf
-override.tf.json
-*_override.tf
-*_override.tf.json
+# override.tf
+# override.tf.json
+# *_override.tf
+# *_override.tf.json
 
 # CLI config (local)
 .terraformrc
@@ -32,8 +32,8 @@ terraform.rc
 .idea/
 .vscode/
 # Ignore real tfvars (can contain sensitive data)
-*.tfvars
-*.tfvars.json
+# *.tfvars
+# *.tfvars.json
 
 # Allow examples
-!terraform.tfvars.example
+# !terraform.tfvars.example
